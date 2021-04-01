@@ -12,9 +12,6 @@ class CreateEntryForm(forms.Form):
         title = forms.CharField(label="", widget= forms.TextInput(attrs={'placeholder':'Title', 'class': 'form-control'}))
         content = forms.CharField(label="", widget=forms.Textarea(attrs={'placeholder':'Content', 'class': 'form-control'}))
 
-class CreateEditForm(forms.Form):
-        title = forms.CharField(label="", widget=forms.TextInput(attrs={'class': 'form-control', 'readonly': True}))
-        content = forms.CharField(label="", widget=forms.Textarea(attrs={'class': 'form-control'}))
 
 def index(request):
     return render(request, "encyclopedia/index.html", {
@@ -84,12 +81,9 @@ def create(request):
             "form": CreateEntryForm()
         })
     
-
-form.fields['title'].widget.attrs['readonly'] = True
-
 def edit(request, title):
     if request.method == "POST":
-        form = CreateEditForm(request.POST)
+        form = CreateEntryForm(request.POST)
         if form.is_valid():
             title= form.cleaned_data["title"]
             content= form.cleaned_data["content"]
@@ -103,7 +97,8 @@ def edit(request, title):
     else:
         content = util.get_entry(title) 
         initial_dict = {"content" : content, "title" : title}
-        form = CreateEditForm(initial_dict)
+        form = CreateEntryForm(initial_dict)
+        form.fields['title'].widget.attrs['readonly'] = True
         print(form)
         return render(request, "encyclopedia/edit.html", {
             "form": form,
