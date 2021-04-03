@@ -98,8 +98,8 @@ def edit(request, title):
         content = util.get_entry(title) 
         initial_dict = {"content" : content, "title" : title}
         form = CreateEntryForm(initial_dict)
+        # make "title" field not changeable for the user, if attribute "disabled" would have been used, post request will not send the value.
         form.fields['title'].widget.attrs['readonly'] = True
-        print(form)
         return render(request, "encyclopedia/edit.html", {
             "form": form,
         })
